@@ -1,0 +1,20 @@
+Log:
+    project_name: 烛台
+    file_name: log
+    backup: 3
+    console_level: WARNING
+    file_level: DEBUG
+    pattern: '%(asctime)s - %(name)s - %(levelname)s - %(module)s|%(funcName)s|%(lineno)d - %(message)s'
+Mail:
+    title: 烛台系统自动化测试报告
+    message: 自动化测试报告，详见附件
+    receiver: zhaoshuang02@sunlands.com
+    server: smtp.263.net
+    sender: zhaoshuang02@sunlands.com
+    password: shuang822
+Report:
+   name:  report
+   title: 烛台系统自动化测试报告
+   description: 自动化测试用例执行结果
+   tester: 赵爽
+

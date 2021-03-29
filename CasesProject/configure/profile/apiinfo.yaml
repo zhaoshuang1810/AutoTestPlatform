@@ -1,0 +1,21 @@
+Run:
+  Version: "3.29.0"
+  Client: app
+  Project: jyws
+
+Client:
+  app:
+    subchannel: APP
+  mp:
+    subchannel: MINI_PROGRAM
+  h5:
+    subchannel: H5
+
+Project:
+  jyws:
+    name: 加盐学院
+    ReqChannel: JYWS
+    channel: JYWS
+    app: jyws
+  school:
+    name: 康德

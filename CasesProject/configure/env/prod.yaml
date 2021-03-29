@@ -1,0 +1,20 @@
+DB:
+  host: 49.232.102.145
+  port: 3306
+  name: school
+  username: root
+  password: feo@2030
+  charset: utf8
+
+MongoDB:
+  host: 49.232.102.145
+  port: 27017
+  username: root
+  password: feo20200402
+  name: school
+
+Redis:
+  host: 49.232.102.145
+  port: 6379
+  db: 0
+  password: sunlands@2018
