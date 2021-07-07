@@ -32,10 +32,10 @@ class VersionTestSetting(object):
 		return models.VersionTest.objects.filter(version__status__exact=10)
 
 	model_icon = 'fa fa-font'
-	list_display = ['version', 'apitest3', 'apitest', 'result', 'test_date', 'test_user', 'prod_user']
+	list_display = ['version', 'apitest3', 'apitest',  'result2', 'test_date', 'test_user', 'prod_user']
 	search_fields = ('api__path', 'api__code', 'remark')
 	list_filter = ('version', 'result', 'test_user', 'prod_user')
-	list_editable = ['result', 'test_date', 'test_user', 'prod_user', 'remark']
+	list_editable = ['test_date', 'test_user', 'prod_user', 'remark']
 	show_detail_fields = ['apitest']
 	list_export = ('xls',)
 	list_export_fields = (

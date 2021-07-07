@@ -6,6 +6,10 @@ from configure.config import PROFILE_PATH, TestEnv
 from testcase.com.apirun import ApiRun
 from util.yamlfile import YamlReader, YamlWriter
 
+API_INFO = YamlReader(os.path.join(PROFILE_PATH, "apiinfo.yaml")).data
+Project = API_INFO.get('Run').get("Project")
+channel = API_INFO.get('Project').get(Project).get('channel')
+
 
 class TestCom(unittest.TestCase):
 
@@ -23,7 +27,7 @@ class TestCom(unittest.TestCase):
 		print(resp)
 
 	def test_info_update(self):
-		user = 'jyws'
+		user = 'jyws2'
 		resp = ApiRun('meInfo').execute(user=user)
 		print(resp)
 		USER_DATA = YamlReader(os.path.join(PROFILE_PATH, "userinfo.yaml")).data
@@ -33,29 +37,17 @@ class TestCom(unittest.TestCase):
 
 	def test_delete_user(self):
 		params = {
-			"query": {"userId": 138390}
+			"query": {"userId": 138568}
 		}
 		resp = ApiRun('deleteUserIds').execute(params=params)
 		print(resp)
 
-	def test_payment_success(self):
-		params = {
-			"body": {
-				"resultCode": "SUCCESS",
-				"totalFee": 1,
-				"paymentType": 16
-			},
-			"path": {"orderNumber": "20210408173819502t3rzoCb2Ts"}
-		}
-		resp = ApiRun('paymentNotify').execute(params=params, user="school")
-		print(resp)
-
 	def test_create_commodity_tp(self):
 		user = "school"
-		name = "zs勿动-退费测试-TP退费成功-咖啡分期"
+		name = "zs勿动-分付君分期"
 		params = {
 			"body": {
-				"channel": "JYWS",
+				"channel": channel,
 				"name": "{}-教学计划".format(name),
 				"categoryId": 1923,
 				"standardPeopleNumber": 100,
@@ -91,7 +83,7 @@ class TestCom(unittest.TestCase):
 		tpId = resp['id']
 		params = {
 			"body": {
-				"channel": "JYWS",
+				"channel": channel,
 				"beginDate": time.strftime("%Y-%m-%d %H:%M:%S"),
 				"teachingPlanId": tpId,
 				"name": "{}-学习班".format(name),
@@ -101,7 +93,7 @@ class TestCom(unittest.TestCase):
 		resp = ApiRun('learningClassCreate').execute(params=params, user=user)
 		params = {
 			"body": {
-				"channel": "JYWS",
+				"channel": channel,
 				"name": "{}-商品".format(name),
 				"classificationIds": [2079],
 				"coverImage": "https://r-exam-fe.ministudy.com/school/test/JYWS/teaching/1606707941652.png",
@@ -135,7 +127,7 @@ class TestCom(unittest.TestCase):
 		params = {
 			"path": {"id": commodityId},
 			"body": [
-				{"resourceId": tpId, "id": commodityId, "resourceType": "TEACHING_PLAN", "channel": "JYWS"}
+				{"resourceId": tpId, "id": commodityId, "resourceType": "TEACHING_PLAN", "channel": channel}
 			]
 		}
 		resp = ApiRun('commodityAddItem').execute(params=params, user=user)
@@ -146,10 +138,10 @@ class TestCom(unittest.TestCase):
 
 	def test_create_commodity_coupon(self):
 		user = "school"
-		name = "zs勿动-退费测试-定金卷"
+		name = "zs勿动-0元"
 		params = {
 			"body": {
-				"channel": "JYWS",
+				"channel": channel,
 				"discountType": 10,  # 10优惠卷 20定金卷
 				"name": "{}-优惠卷".format(name),
 				"fullPrice": 10000,  # 满额
@@ -165,7 +157,7 @@ class TestCom(unittest.TestCase):
 		couponId = resp['id']
 		params = {
 			"body": {
-				"channel": "JYWS",
+				"channel": channel,
 				"name": "{}-商品".format(name),
 				"classificationIds": [2079],
 				"coverImage": "https://r-exam-fe.ministudy.com/school/test/JYWS/teaching/1606707941652.png",
@@ -199,7 +191,7 @@ class TestCom(unittest.TestCase):
 		params = {
 			"path": {"id": commodityId},
 			"body": [
-				{"resourceId": couponId, "id": commodityId, "resourceType": "COUPON", "channel": "JYWS"}
+				{"resourceId": couponId, "id": commodityId, "resourceType": "COUPON", "channel": channel}
 			]
 		}
 		resp = ApiRun('commodityAddItem').execute(params=params, user=user)
@@ -207,3 +199,71 @@ class TestCom(unittest.TestCase):
 			"path": {"id": commodityId}
 		}
 		resp = ApiRun('commodityPublish').execute(params=params, user="school")
+
+	def test_create_order(self):
+		params = {
+			"body": {
+				"commodityId": 3102,
+				"commodityNum": 1,
+				# "discountCode": "788a8b1291830996",
+				"instalments": True,
+			}
+		}
+		resp = ApiRun('orderCreate').execute(params, user='jyws')
+		print(resp)
+		params = {
+			"body": {
+				"type": channel,
+				"orderId": resp['orderNumber'],
+			}
+		}
+		resp = ApiRun('orderPay').execute(params, user='jyws')
+		print(resp)
+
+	def test_pay_order(self):
+		params = {
+			"body": {
+				"type": channel,
+				"orderId": "20210602134539930qY8h8598dA",
+			}
+		}
+		resp = ApiRun('orderPay').execute(params, user='jyws')
+		print(resp)
+
+	def test_cancel_order(self):
+		params = {
+			"path": {"orderNumber": "202105261119532628khxP1mXTa"}
+		}
+		resp = ApiRun('orderCancel').execute(params, user='jyws2')
+		print(resp)
+
+	def test_payment_success(self):
+		params = {
+			"body": {
+				"resultCode": "SUCCESS",
+				"totalFee": 59900,
+				"paymentType": 110
+			},
+			"path": {"orderNumber": "20210610110257377AMS6LUS86S"}
+		}
+		resp = ApiRun('paymentNotify').execute(params=params, user="school")
+		print(resp)
+
+	def test_attendanceRecord(self):
+		for i in range(10):
+			params = {
+				"body": {
+					"teachingPlanId": 997,
+					"learningClassId": 6235,
+					"theLessonId": 956984,
+					# "finalPosition": 0+i*5   # 回放和点播课节才有该字段
+				},
+				# "header": {
+				# 	"Authorization": "eyJhbGciOiJIUzUxMiJ9.eyJwIjoiTlNZQiIsInN0dWRlbnRJZCI6MTIxNTg3MCwicyI6bnVsbCwiYyI6MTYyMjcwMzM5MTQ3MiwiZSI6MTYyMzk5OTM5MTQ3MiwiaSI6MTM4NjMwLCJuaSI6IjYwYWIwZjMyNDk5ZjcwMDAwMTg4NDMxZiJ9.vI98YSpp8bJ51zzyrn0k_LdYPE-V92R4PjfJk9J5JBkZXZNyYziO52HtwdxYiobfxpelqTFZx9kDDQQxNHRbUA",
+				# 	"ReqChannel": "nsyb", "appVersion": "1.0.0", "appDeviceType": "h5_play",
+				# 	"Content-Type": "application/json"}
+
+			}
+			resp = ApiRun('attendanceRecord', 201).execute(params=params, user="jyws")
+			print(resp)
+			time.sleep(5)

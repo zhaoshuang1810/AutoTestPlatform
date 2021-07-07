@@ -11,7 +11,7 @@ DB:
   charset: utf8
 
 DjangoDB:
-  host: 172.18.69.240
+  host: 127.0.0.1
   port: 3306
   name: django_project
   username: root

@@ -1,6 +1,6 @@
 Run:
-  Version: "3.29.0"
-  Client: app
+  Version: "4.0.0"
+  Client: pc
   Project: jyws
 
 Client:
@@ -10,6 +10,8 @@ Client:
     subchannel: MINI_PROGRAM
   h5:
     subchannel: H5
+  pc:
+    subchannel: PC
 
 Project:
   jyws:
@@ -19,3 +21,8 @@ Project:
     app: jyws
   school:
     name: 康德
+  nsyb:
+    name: SAAS测试
+    ReqChannel: NSYB
+    channel: NSYB
+    app: nsyb

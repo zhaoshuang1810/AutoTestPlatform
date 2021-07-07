@@ -142,7 +142,7 @@ class ApiTest(models.Model):
 	class Meta:
 		verbose_name = "接口测试点"
 		verbose_name_plural = verbose_name
-		ordering = ['api', 'sort', '-id']
+		ordering = ['api', 'sort', 'id']
 
 	def __str__(self):
 		return "{}：{}".format(self.api.code, self.desc)
@@ -197,11 +197,28 @@ class VersionTest(models.Model):
 			<div><a href='/xadmin/interface/apitest/?_rel_api__id__exact={api_id}' target='_blank'>{api_desc}</a></div>""",
 			api_id=self.api.id, api_desc=self.api.code)
 
+	def result2(self):
+		if self.result == "pass":
+			color_code = 'green'
+			result = "通过"
+		elif self.result == "faild":
+			color_code = 'red'
+			result = "失败"
+		else:
+			color_code = 'black'
+			result = "空"
+		return format_html(
+			"""<div class="btn-group pull-right">
+					<a class="editable-handler" title="输入测试结果" data-editable-field="result" data-editable-loadurl="/xadmin/interface/versiontest/{}/patch/?fields=result"><i class="fa fa-edit"></i></a>
+				</div>
+				<span class="editable-field" style="color:{};">{}</span>""", self.id, color_code, result)
+
 	apicode.short_description = '接口名称'
 	apidesc.short_description = '接口描述'
 	apitest.short_description = '接口测试点'
 	apitest2.short_description = '接口测试点'
 	apitest3.short_description = '接口'
+	result2.short_description = '测试结果'
 
 	class Meta:
 		verbose_name = "接口测试计划"

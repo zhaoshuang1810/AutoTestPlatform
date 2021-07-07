@@ -39,6 +39,8 @@ class Interface(object):
 		if files:
 			response = res(self.url, self.body, files=files, headers=self.header, verify=False)
 		else:
+			if self.body:
+				self.header['Content-Type'] = 'application/json'
 			response = res(self.url, params=self.query, data=json.dumps(self.body), files=files, headers=self.header,
 						   verify=False)
 
@@ -111,9 +113,15 @@ class Interface(object):
 
 if __name__ == '__main__':
 	mode = 'post'
-	url = 'http://r-bf-fe.ministudy.com:2002/api/import/invoice'
+	url = 'http://r-bf-fe.jiayans.net:2002/api/payment/config/upload'
 	params = {
-		'body': {"channel": "JYWS"}
+		"header": {
+			"Authorization": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJjZXNoaWRlbmdsdSIsImNyZWF0ZWQiOjE2MTcxODI1MDM3MTYsImV4cCI6MTYxNzc4NzMwM30.Xr1DHvi7n_VINHfhHOZvmCTdLKtZE6_i3JLrrx6dhEvetImAHsU2jqzH9KSFoy49ihjintY3TL5mnB3ESD3GOg",
+			"Content-Type": "multipart/form-data"},
+		"path": {},
+		"query": {},
+		'body': {"channel": "JYWS"},
+		"file": "C:\\Users\\Dell\\Desktop\\退费流程图.png"
 	}
 	(code, resp) = Interface(mode, url, params).run
 	print(code)
